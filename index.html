@@ -34,6 +34,7 @@
             cursor: pointer;
             transition: transform 0.3s;
         }
+
         /* original pic */
         label {
             background-image: url('doge.png');
@@ -58,8 +59,6 @@
             pointer-events: none;
         }
 
-       
-
         .hover-text {
         position: absolute;
         bottom: 50px;
@@ -75,22 +74,36 @@
         transition: opacity 0.3s;
     }
 
+
     .image-container:hover .hover-text {
         opacity: 1;
     }
 
     </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('toggle');
+        const audio = document.getElementById('click-sound');
+        
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+                audio.play();
+            }
+        });
+    });
+</script>
+
 </head>
 <body>
    <div class="image-container">
     <input type="checkbox" id="toggle">
-    <label for="toggle" onclick="playRandomSound()"></label>
+    <label for="toggle"></label>
     <div class="hover-text">DONT CLICK ME!!!</div>
    </div>
 
     </script>
-   <audio 
- 
+   <audio id="click-sound" src=""></audio>
 </body>
 
 </html> 

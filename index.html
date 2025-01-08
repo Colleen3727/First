@@ -23,7 +23,7 @@
         input[type="checkbox"] {
             display: none;
         }
-
+ 
         label {
             display: inline-block;
             width: 400px;
@@ -46,19 +46,6 @@
             position: relative;
         }
 
-        /*red filter*/
-        input[type="checkbox"]:checked+ label::after{
-            content:'';
-            position: absolute;
-            top: 0;
-            left:0;
-            width:100%;
-            height:100%;
-            background-color: rgba(232, 78, 78, 0.30); /* red filter */
-            border-radius:10px;
-            pointer-events: none;
-        }
-
         .hover-text {
         position: absolute;
         bottom: 50px;
@@ -69,11 +56,10 @@
         padding: 10px 20px;
         border-radius: 5px;
         font-size: 16px;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         opacity: 0;
         transition: opacity 0.3s;
     }
-
 
     .image-container:hover .hover-text {
         opacity: 1;
@@ -81,29 +67,14 @@
 
     </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkbox = document.getElementById('toggle');
-        const audio = document.getElementById('click-sound');
-        
-        checkbox.addEventListener('change', function() {
-            if (checkbox.checked) {
-                audio.play();
-            }
-        });
-    });
-</script>
-
 </head>
 <body>
    <div class="image-container">
     <input type="checkbox" id="toggle">
     <label for="toggle"></label>
     <div class="hover-text">DONT CLICK ME!!!</div>
-   </div>
+   </div>t
 
-    </script>
-   <audio id="click-sound" src=""></audio>
 </body>
 
 </html> 

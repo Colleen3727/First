@@ -45,6 +45,8 @@
         input[type="checkbox"]:checked + label {
             background-image: url('cheems.png');
             position: relative;
+            filter: red;
+            opacity: 1;
         }
 
         /*text*/
@@ -72,10 +74,19 @@
 </head>
 <body>
    <div class="image-container">
-    <input type="checkbox" id="toggle">
+    <input type="checkbox" id="toggle" onclick="playSound()">
     <label for="toggle"></label>
     <div class="hover-text">DONT CLICK ME!!!</div>
    </div>
+   <audio id="audio" src="村民受伤1_爱给网_aigei_com.mp3"></audio>
+
+   <script>
+       function playSound() {
+           const audio = document.getElementById('audio');
+           audio.currentTime = 0; // Reset
+           audio.play(); 
+       }
+   </script>
 
 </body>
 

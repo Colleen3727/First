@@ -7,27 +7,36 @@
 </head>
 <body>
    <style>
-        /*background*/
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-image: repeating-conic-gradient(red,rgb(230, 230, 92),rgb(196, 104, 61),rgb(153, 242, 126),rgb(226, 108, 226) 10%);
+            background-image: repeating-conic-gradient(red, rgb(230, 230, 92), rgb(196, 104, 61), rgb(153, 242, 126), rgb(226, 108, 226) 10%);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
         }
 
         .image-container {
-        position: relative;
-        display: inline-block;
-    }
+            position: relative;
+            display: inline-block;
+            margin: 0 60px; 
+        }
+
         input[type="checkbox"] {
             display: none;
         }
- 
+
         label {
             display: inline-block;
-            width: 400px;
+            width: 400px; 
             height: 400px;
             background-size: cover;
             background-position: center;
@@ -36,58 +45,91 @@
             transition: transform 0.3s;
         }
 
-        /* original pic */
-        label {
+        #left-toggle + label,
+        #right-toggle + label {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* 中间图片默认是doge */
+        #center-toggle + label {
             background-image: url('doge.png');
         }
 
-        /* change pic after click it */
+        /* 中间的checkbox被选中时切换图片 */
         input[type="checkbox"]:checked + label {
             background-image: url('cheems.png');
-            position: relative;
-            filter: red;
+        }
+
+        .hover-text {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 64, 225, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .image-container:hover .hover-text {
             opacity: 1;
         }
 
-        /*text*/
-        .hover-text {
-        position: absolute;
-        bottom: 50px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 64, 225, 0.7);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
+        #left-toggle + label {
+            background-image: url('icons8-法力-64.png');
+        }
 
-    .image-container:hover .hover-text {
-        opacity: 1;
-    }
-
+        #right-toggle + label {
+            background-image: url('icons8-我的世界-金苹果-64.png');
+        }
     </style>
 
 </head>
 <body>
-   <div class="image-container">
-    <input type="checkbox" id="toggle" onclick="playSound()">
-    <label for="toggle"></label>
-    <div class="hover-text">DONT CLICK ME!!!</div>
-   </div>
-   <audio id="audio" src="村民受伤1_爱给网_aigei_com.mp3"></audio>
+    <div class="container">
+        <div class="image-container">
+            <input type="checkbox" id="left-toggle" onclick="playLeftSound()">
+            <label for="left-toggle"></label>
+        </div>
+        <div class="image-container">
+            <input type="checkbox" id="center-toggle" onclick="playCenterSound()">
+            <label for="center-toggle"></label>
+            <div class="hover-text">DONT CLICK ME!!!</div>
+        </div>
+        <div class="image-container">
+            <input type="checkbox" id="right-toggle" onclick="playRightSound()">
+            <label for="right-toggle"></label>
+        </div>
+    </div>
 
-   <script>
-       function playSound() {
-           const audio = document.getElementById('audio');
-           audio.currentTime = 0; // Reset
-           audio.play(); 
-       }
-   </script>
+    <audio id="center-audio" src="村民受伤1_爱给网_aigei_com.mp3"></audio>
+    <audio id="left-audio" src="我的世界-喝药水_爱给网_aigei_com.mp3"></audio>
+    <audio id="right-audio" src="我的世界-吃东西_爱给网_aigei_com.mp3"></audio>
+
+    <script>
+        function playLeftSound() {
+            const audio = document.getElementById('left-audio');
+            audio.currentTime = 0; // Reset
+            audio.play(); 
+        }
+
+        function playCenterSound() {
+            const audio = document.getElementById('center-audio');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
+        function playRightSound() {
+            const audio = document.getElementById('right-audio');
+            audio.currentTime = 0;
+            audio.play();
+        }
+    </script>
 
 </body>
-
-</html> 
+</html>

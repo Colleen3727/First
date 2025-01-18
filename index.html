@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<body>
-   <style>
+    <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-image: repeating-conic-gradient(red, rgb(230, 230, 92), rgb(196, 104, 61), rgb(153, 242, 126), rgb(226, 108, 226) 10%);
+            background: linear-gradient(135deg, red, rgb(230, 230, 92), rgb(196, 104, 61), rgb(153, 242, 126), rgb(226, 108, 226));
+            background-size: 200% 200%;
+            animation: backgroundAnimation 10s ease infinite;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -22,12 +29,13 @@
             align-items: center;
             width: 100%;
             max-width: 1200px;
+            position: relative;
         }
 
         .image-container {
             position: relative;
             display: inline-block;
-            margin: 0 60px; 
+            margin: 0 100px; 
         }
 
         input[type="checkbox"] {
@@ -51,12 +59,10 @@
             height: 200px;
         }
 
-        /* 中间图片默认是doge */
         #center-toggle + label {
             background-image: url('doge.png');
         }
 
-        /* 中间的checkbox被选中时切换图片 */
         input[type="checkbox"]:checked + label {
             background-image: url('cheems.png');
         }
@@ -71,7 +77,6 @@
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -87,8 +92,111 @@
         #right-toggle + label {
             background-image: url('icons8-我的世界-金苹果-64.png');
         }
-    </style>
 
+        .health-container {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+
+        .heart {
+            width: 30px;
+            height: 30px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .heart.full {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+        }
+
+        .heart.empty {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L-4 4-4-4a5.5 5.5 0 0 0-7.78 7.78l4 4 a5.5 5.5 0 0 0 7.78 0 l4-4 a5.5 5.5 0 0 0 0-7.78"></path></svg>');
+        }
+
+        .damage-filter {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 0, 0, 0.3);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+            font-size: 36px;
+        }
+
+        .decorations {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .decoration {
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .decoration.star {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="yellow"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+        }
+
+        .decoration.heart {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+        }
+
+        .ui-container {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .ui-container div {
+            font-size: 24px;
+            color: white;
+        }
+
+        .reset-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -98,8 +206,12 @@
         </div>
         <div class="image-container">
             <input type="checkbox" id="center-toggle" onclick="playCenterSound()">
-            <label for="center-toggle"></label>
+            <label for="center-toggle" id="center-label"></label>
             <div class="hover-text">DONT CLICK ME!!!</div>
+            <div class="health-container" id="health-container">
+                <!-- Hearts will be dynamically added here -->
+            </div>
+            <div class="damage-filter" id="damage-filter"></div>
         </div>
         <div class="image-container">
             <input type="checkbox" id="right-toggle" onclick="playRightSound()">
@@ -107,28 +219,134 @@
         </div>
     </div>
 
+    <div class="game-over" id="game-over">You are dead!</div>
+
+    <div class="decorations">
+        <div class="decoration star"></div>
+        <div class="decoration heart"></div>
+    </div>
+
+    <div class="ui-container">
+        <div>Score: <span id="score">0</span></div>
+        <div>Health: <span id="health">10</span>/10</div>
+    </div>
+
+    <button class="reset-button" onclick="resetGame()">Reset Game</button>
+
     <audio id="center-audio" src="村民受伤1_爱给网_aigei_com.mp3"></audio>
     <audio id="left-audio" src="我的世界-喝药水_爱给网_aigei_com.mp3"></audio>
     <audio id="right-audio" src="我的世界-吃东西_爱给网_aigei_com.mp3"></audio>
 
     <script>
+        let health = 10; // 10 hearts
+        let score = 0;
+        let centerImageChanged = false;
+
         function playLeftSound() {
             const audio = document.getElementById('left-audio');
             audio.currentTime = 0; // Reset
-            audio.play(); 
+            audio.play();
+            heal(0.5);
+            updateScore();
         }
 
         function playCenterSound() {
             const audio = document.getElementById('center-audio');
             audio.currentTime = 0;
             audio.play();
+            damage(0.5);
+            toggleCenterImage();
+            showDamageFilter();
+            updateScore();
         }
 
         function playRightSound() {
             const audio = document.getElementById('right-audio');
             audio.currentTime = 0;
             audio.play();
+            heal(0.5);
+            updateScore();
         }
+
+        function damage(amount) {
+            health -= amount;
+            health = Math.max(0, health); // Ensure health doesn't go below 0
+            updateHealthBar();
+            if (health === 0) {
+                showGameOver();
+            }
+        }
+
+        function heal(amount) {
+            health += amount;
+            health = Math.min(10, health); // Ensure health doesn't go above 10
+            updateHealthBar();
+        }
+
+        function updateHealthBar() {
+            const healthContainer = document.getElementById('health-container');
+            healthContainer.innerHTML = ''; // Clear existing hearts
+
+            for (let i = 0; i < 10; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                if (i < health) {
+                    heart.classList.add('full');
+                } else {
+                    heart.classList.add('empty');
+                }
+                healthContainer.appendChild(heart);
+            }
+            document.getElementById('health').innerText = health;
+        }
+
+        function toggleCenterImage() {
+            const centerLabel = document.getElementById('center-label');
+            const centerToggle = document.getElementById('center-toggle');
+            if (centerImageChanged) {
+                centerLabel.style.backgroundImage = 'url(doge.png)';
+                centerToggle.checked = false;
+            } else {
+                centerLabel.style.backgroundImage = 'url(cheems.png)';
+                centerToggle.checked = true;
+            }
+            centerImageChanged = !centerImageChanged;
+        }
+
+        function showDamageFilter() {
+            const damageFilter = document.getElementById('damage-filter');
+            damageFilter.style.opacity = 1;
+            setTimeout(() => {
+                damageFilter.style.opacity = 0;
+            }, 300);
+        }
+
+        function showGameOver() {
+            const gameOver = document.getElementById('game-over');
+            gameOver.style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').innerText = score;
+        }
+
+        function resetGame() {
+            health = 10;
+            score = 0;
+            centerImageChanged = false;
+            const centerLabel = document.getElementById('center-label');
+            centerLabel.style.backgroundImage = 'url(doge.png)';
+            const centerToggle = document.getElementById('center-toggle');
+            centerToggle.checked = false;
+            const gameOver = document.getElementById('game-over');
+            gameOver.style.display = 'none';
+            updateHealthBar();
+            updateScore();
+        }
+
+        // Initialize the health bar and score
+        updateHealthBar();
+        updateScore();
     </script>
 
 </body>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulated Desktop</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .desktop {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: url('ae49bb07a6bbd4692464073fb64904ec.jpg@h_1280.jpeg') no-repeat center center;
+            background-size: cover;
+        }
+
+        .popup {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #000;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: scale(0);
+        }
+
+        .popup::before {
+            content: 'X';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            color: red;
+        }
+
+        .popup::before:hover {
+            text-decoration: underline;
+        }
+
+        .popup.mosaic {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.8),
+                rgba(255, 255, 255, 0.8) 1px,
+                rgba(0, 0, 0, 0.8) 1px,
+                rgba(0, 0, 0, 0.8) 2px
+            );
+        }
+
+        .eye {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('eye.png') no-repeat center center;
+            background-size: cover;
+            z-index: 10;
+            animation: rotateEye 5s infinite linear;
+        }
+
+        .trashcan {
+            position: absolute;
+            bottom: 700px;
+            left: 100px;
+            width: 100px;
+            height: 100px;
+            background: url('回收站\(Recycle\ Bin\)_爱给网_aigei_com.png') no-repeat center center;
+            background-size: cover;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes rotateEye {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .distorted {
+            filter: url(#distortion);
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop" id="desktop">
+        <div class="eye" id="eye"></div>
+        <div class="trashcan" onclick="clearPopups()"></div>
+    </div>
+
+    <svg width="0" height="0">
+        <filter id="distortion">
+            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" result="turbulence" />
+            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="50" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <script>
+        let popups = [];
+        let popupInterval;
+
+        function createPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.textContent = 'Popup ' + (popups.length + 1) + ' - Some random text';
+            popup.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
+            popup.style.top = (Math.random() * (window.innerHeight - 100)) + 'px';
+
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup || e.target === popup.firstElementChild) {
+                    popup.remove();
+                    popups = popups.filter(p => p !== popup);
+                }
+            });
+
+            document.getElementById('desktop').appendChild(popup);
+            popups.push(popup);
+
+            setTimeout(() => {
+                popup.style.opacity = 1;
+                popup.style.transform = 'scale(1)';
+            }, 100);
+
+            if (Math.random() < 0.2) {
+                popup.classList.add('mosaic');
+            }
+
+            if (Math.random() < 0.1) {
+                popup.classList.add('distorted');
+            }
+        }
+
+        function clearPopups() {
+            popups.forEach(popup => {
+                popup.remove();
+            });
+            popups = [];
+        }
+
+        function startPopups() {
+            popupInterval = setInterval(() => {
+                createPopup();
+            }, 2000);
+        }
+
+        function stopPopups() {
+            clearInterval(popupInterval);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startPopups();
+        });
+
+        document.getElementById('eye').addEventListener('mouseover', () => {
+            document.getElementById('desktop').classList.add('distorted');
+        });
+
+        document.getElementById('eye').addEventListener('mouseout', () => {
+            document.getElementById('desktop').classList.remove('distorted');
+        });
+    </script>
+
+</body>
+</html>

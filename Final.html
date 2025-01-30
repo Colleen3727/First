@@ -10,6 +10,7 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
+            transition: background-color 0.5s; 
         }
 
         .desktop {
@@ -24,23 +25,33 @@
             position: absolute;
             width: 200px;
             height: 100px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #000;
+            background: #f0f0f0;
+            border: 1px solid #cccccc;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             z-index: 10;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Arial', sans-serif;
             font-size: 14px;
             opacity: 0;
             transition: opacity 0.3s, transform 0.3s;
             transform: scale(0);
         }
 
-        .popup::before {
-            content: 'X';
+        .popup .title {
+            width: 100%;
+            background: #e0e0e0;
+            padding: 5px;
+            border-bottom: 1px solid #cccccc;
+            text-align: left;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .popup .title .close {
             position: absolute;
             top: 5px;
             right: 10px;
@@ -48,8 +59,13 @@
             color: red;
         }
 
-        .popup::before:hover {
+        .popup .title .close:hover {
             text-decoration: underline;
+        }
+
+        .popup .content {
+            padding: 10px;
+            text-align: center;
         }
 
         .popup.mosaic {
@@ -66,12 +82,12 @@
             position: absolute;
             width: 50px;
             height: 50px;
-            background: url('eye.png') no-repeat center center;
+            background: url('icons8-眼睛-94.png') no-repeat center center;
             background-size: cover;
             z-index: 10;
             animation: rotateEye 5s infinite linear;
         }
-
+        
         .trashcan {
             position: absolute;
             bottom: 700px;
@@ -97,7 +113,7 @@
 <body>
     <div class="desktop" id="desktop">
         <div class="eye" id="eye"></div>
-        <div class="trashcan" onclick="clearPopups()"></div>
+        <div class="trashcan"></div>
     </div>
 
     <svg width="0" height="0">
@@ -110,20 +126,34 @@
     <script>
         let popups = [];
         let popupInterval;
+        let popupSpeed = 2000;
+        const popupContent = [
+            "Hi, have you seen my donuts?",
+            "Warning: System Update Required",
+            "New Email from Kevin Mitnick",
+            "Your subscription is about to expire",
+            "Important: Security Alert",
+            "You have a new message",
+            "System Error: Please restart your computer",
+            "Error! Error! Error!",
+            "Your password will expire in 7 days",
+            "Urgent: Password Reset Required",
+            "Try to shut me up, huh?",
+            "Just wait and see.",
+            "You wish!",
+            "(꒪▿꒪)",
+            " (╯°口°)╯︵ ┻━┻",
+        ];
 
         function createPopup() {
             const popup = document.createElement('div');
             popup.className = 'popup';
-            popup.textContent = 'Popup ' + (popups.length + 1) + ' - Some random text';
+            popup.innerHTML = `
+                <div class="title">Popup <span class="close" onclick="closePopup(event)">X</span></div>
+                <div class="content">${popupContent[Math.floor(Math.random() * popupContent.length)]}</div>
+            `;
             popup.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
             popup.style.top = (Math.random() * (window.innerHeight - 100)) + 'px';
-
-            popup.addEventListener('click', (e) => {
-                if (e.target === popup || e.target === popup.firstElementChild) {
-                    popup.remove();
-                    popups = popups.filter(p => p !== popup);
-                }
-            });
 
             document.getElementById('desktop').appendChild(popup);
             popups.push(popup);
@@ -136,39 +166,68 @@
             if (Math.random() < 0.2) {
                 popup.classList.add('mosaic');
             }
+        }
 
-            if (Math.random() < 0.1) {
-                popup.classList.add('distorted');
+        function closePopup(event) {
+            event.stopPropagation(); 
+            const popup = event.target.closest('.popup');
+            if (popup) {
+                popup.remove();
+                popups = popups.filter(p => p !== popup);
+                adjustPopupSpeed();
             }
         }
 
         function clearPopups() {
-            popups.forEach(popup => {
-                popup.remove();
-            });
-            popups = [];
         }
 
         function startPopups() {
             popupInterval = setInterval(() => {
                 createPopup();
-            }, 2000);
+            }, popupSpeed);
         }
 
         function stopPopups() {
             clearInterval(popupInterval);
         }
 
+        function adjustPopupSpeed() {
+            if (popups.length < 5) {
+                popupSpeed = 2000;
+            } else if (popups.length < 10) {
+                popupSpeed = 1500;
+            } else if (popups.length < 15) {
+                popupSpeed = 1000;
+            } else {
+                popupSpeed = 500;
+            }
+            if (popupInterval) {
+                clearInterval(popupInterval);
+                startPopups();
+            }
+        }
+
+        function randomDistortion() {
+            const desktop = document.getElementById('desktop');
+            if (Math.random() < 0.1) { 
+                desktop.classList.add('distorted');
+                setTimeout(() => {
+                    desktop.classList.remove('distorted');
+                }, 1000); 
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             startPopups();
-        });
 
-        document.getElementById('eye').addEventListener('mouseover', () => {
-            document.getElementById('desktop').classList.add('distorted');
-        });
+            
+            setInterval(randomDistortion, 3000); 
 
-        document.getElementById('eye').addEventListener('mouseout', () => {
-            document.getElementById('desktop').classList.remove('distorted');
+            document.getElementById('desktop').addEventListener('click', (e) => {
+                if (e.target.classList.contains('popup') || e.target.classList.contains('title')) {
+                    return;
+                }
+            });
         });
     </script>
 

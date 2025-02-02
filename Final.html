@@ -19,12 +19,11 @@
             height: 100%;
             background: url('ae49bb07a6bbd4692464073fb64904ec.jpg@h_1280.jpeg') no-repeat center center;
             background-size: cover;
+            transition: filter 1s ease-in-out; 
         }
 
         .popup {
             position: absolute;
-            width: 200px;
-            height: 100px;
             background: #f0f0f0;
             border: 1px solid #cccccc;
             border-radius: 5px;
@@ -39,6 +38,9 @@
             opacity: 0;
             transition: opacity 0.3s, transform 0.3s;
             transform: scale(0);
+            padding: 10px; 
+            max-width: 300px;
+            word-wrap: break-word;
         }
 
         .popup .title {
@@ -66,23 +68,14 @@
         .popup .content {
             padding: 10px;
             text-align: center;
-        }
-
-        .popup.mosaic {
-            background: repeating-linear-gradient(
-                45deg,
-                rgba(255, 255, 255, 0.8),
-                rgba(255, 255, 255, 0.8) 1px,
-                rgba(0, 0, 0, 0.8) 1px,
-                rgba(0, 0, 0, 0.8) 2px
-            );
+            width: 100%; 
         }
 
         .eye {
             position: absolute;
             width: 50px;
             height: 50px;
-            background: url('icons8-眼睛-94.png') no-repeat center center;
+            background: url('./icons8-眼睛-94.png') no-repeat center center;
             background-size: cover;
             z-index: 10;
             animation: rotateEye 5s infinite linear;
@@ -100,25 +93,49 @@
             z-index: 10;
         }
 
+        .glitch-block {
+            position: absolute;
+            background: red;
+            z-index: 100;
+            animation: glitch 0.1s infinite;
+        }
+
         @keyframes rotateEye {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes glitch {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
         .distorted {
             filter: url(#distortion);
+        }
+
+        .draggable {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            z-index: 20;
+        }
+
+        .grayscale {
+            filter: grayscale(100%); 
         }
     </style>
 </head>
 <body>
     <div class="desktop" id="desktop">
         <div class="eye" id="eye"></div>
-        <div class="trashcan"></div>
+        <div class="trashcan" id="trashcan"></div>
     </div>
 
     <svg width="0" height="0">
         <filter id="distortion">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" result="turbulence" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="10" result="turbulence" />
             <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="50" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
@@ -143,17 +160,43 @@
             "You wish!",
             "(꒪▿꒪)",
             " (╯°口°)╯︵ ┻━┻",
+            "This is a very long message to test the dynamic sizing of the popup. The popup should adjust its size based on the content length.",
+        ];
+
+        const imageUrls = [
+            '1.jpg', 
+            'doge.png',
+            'cheems.png',
+            '3.jpg',
+            '4.jpg',
+            '5.jpg',
+            '6.jpg',
+            '7.jpg',
+            '8.jpg',
+            '9.jpg',
         ];
 
         function createPopup() {
             const popup = document.createElement('div');
             popup.className = 'popup';
+
+            const content = popupContent[Math.floor(Math.random() * popupContent.length)];
             popup.innerHTML = `
-                <div class="title">Popup <span class="close" onclick="closePopup(event)">X</span></div>
-                <div class="content">${popupContent[Math.floor(Math.random() * popupContent.length)]}</div>
+                <div class="title">Attention <span class="close" onclick="closePopup(event)">X</span></div>
+                <div class="content">${content}</div>
             `;
-            popup.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
-            popup.style.top = (Math.random() * (window.innerHeight - 100)) + 'px';
+
+            const contentLength = content.length;
+            const baseWidth = 150; 
+            const baseHeight = 100;
+            const width = Math.min(baseWidth + (contentLength * 3), 300); 
+            const height = Math.min(baseHeight + (contentLength * 1), 200); 
+
+            popup.style.width = `${width}px`;
+            popup.style.height = `${height}px`;
+
+            popup.style.left = (Math.random() * (window.innerWidth - width)) + 'px';
+            popup.style.top = (Math.random() * (window.innerHeight - height)) + 'px';
 
             document.getElementById('desktop').appendChild(popup);
             popups.push(popup);
@@ -217,19 +260,106 @@
             }
         }
 
+        function createImage() {
+            const img = document.createElement('img');
+            img.src = imageUrls[Math.floor(Math.random() * imageUrls.length)]; 
+            img.className = 'draggable';
+            img.style.width = (50 + Math.random() * 150) + 'px'; 
+            img.style.height = (50 + Math.random() * 150) + 'px'; 
+            img.draggable = true;
+
+            img.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
+            img.style.top = (Math.random() * (window.innerHeight - 200)) + 'px';
+
+            img.addEventListener('dragstart', (e) => {
+                const dragImage = img.cloneNode(true);
+                dragImage.style.position = 'fixed';
+                dragImage.style.top = '-9999px'; /
+                document.body.appendChild(dragImage);
+                e.dataTransfer.setDragImage(dragImage, e.offsetX, e.offsetY);
+
+                img.style.opacity = '0';
+            });
+
+            img.addEventListener('dragend', (e) => {
+                if (e.dataTransfer.dropEffect !== 'move') {
+                    img.style.opacity = '1';
+                }
+            });
+
+            document.getElementById('desktop').appendChild(img);
+        }
+
+        function createGlitchEffect() {
+            const glitchBlock = document.createElement('div');
+            glitchBlock.className = 'glitch-block';
+            glitchBlock.style.width = `${Math.random() * 100 + 50}px`; 
+            glitchBlock.style.height = `${Math.random() * 100 + 50}px`; 
+            glitchBlock.style.left = `${Math.random() * window.innerWidth}px`; 
+            glitchBlock.style.top = `${Math.random() * window.innerHeight}px`; 
+            glitchBlock.style.backgroundColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`; 
+
+            document.getElementById('desktop').appendChild(glitchBlock);
+
+            setTimeout(() => {
+                glitchBlock.remove();
+            }, Math.random() * 500 + 100); 
+        }
+
+        function startGlitchEffect() {
+            setInterval(() => {
+                if (Math.random() < 0.3) { 
+                    for (let i = 0; i < 10; i++) { 
+                        createGlitchEffect();
+                    }
+                }
+            }, 1000); 
+        }
+
+        function toggleGrayscale() {
+            const desktop = document.getElementById('desktop');
+            if (Math.random() < 0.2) { 
+                desktop.classList.add('grayscale');
+                setTimeout(() => {
+                    desktop.classList.remove('grayscale');
+                }, Math.random() * 2000 + 1000); 
+            }
+        }
+
+        function startGrayscaleEffect() {
+            setInterval(toggleGrayscale, 5000); 
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             startPopups();
-
-            
             setInterval(randomDistortion, 3000); 
+
+            setInterval(createImage, 5000); 
 
             document.getElementById('desktop').addEventListener('click', (e) => {
                 if (e.target.classList.contains('popup') || e.target.classList.contains('title')) {
                     return;
                 }
             });
+
+            const trashcan = document.getElementById('trashcan');
+            trashcan.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            trashcan.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const imgSrc = e.dataTransfer.getData('text/plain');
+                const img = document.querySelector(`img[src="${imgSrc}"]`);
+                if (img) {
+                    img.remove();
+                }
+            });
+
+            startGlitchEffect();
+            startGrayscaleEffect();
         });
     </script>
-
 </body>
 </html>

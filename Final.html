@@ -31,6 +31,8 @@
             z-index: 10;
             display: flex;
             flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
             justify-content: space-between;
             align-items: center;
             font-family: 'Arial', sans-serif;
@@ -39,8 +41,8 @@
             transition: opacity 0.3s, transform 0.3s;
             transform: scale(0);
             padding: 10px; 
-            max-width: 300px;
-            word-wrap: break-word;
+            max-width: 300px; 
+            word-wrap: break-word; 
         }
 
         .popup .title {
@@ -66,9 +68,13 @@
         }
 
         .popup .content {
-            padding: 10px;
-            text-align: center;
-            width: 100%; 
+            padding: 0; 
+    text-align: center; 
+    width: 100%; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-grow: 1;
         }
 
         .eye {
@@ -135,8 +141,10 @@
 
     <svg width="0" height="0">
         <filter id="distortion">
-            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="10" result="turbulence" />
-            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="50" xChannelSelector="R" yChannelSelector="G" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="10" result="turbulence" />
+            <animate attributeName="baseFrequency" from="0.1" to="0.02" dur="200s" repeatCount="indefinite" />
+    
+            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="200" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
 
@@ -160,7 +168,35 @@
             "You wish!",
             "(꒪▿꒪)",
             " (╯°口°)╯︵ ┻━┻",
-            "This is a very long message to test the dynamic sizing of the popup. The popup should adjust its size based on the content length.",
+            "Just when you thought it was safe to ignore me, here I am again. You can’t escape my notifications, so why not give in? Click here to see what you’ve been missing. Or don’t—I’ll just keep coming back (◕‿◕✿).",
+            "Surprise! (｡◕‿◕｡)",
+
+"Brace yourself.",
+
+"Oh, you noticed me?",
+
+"Catch me if you can!",
+
+"I see what you did there.",
+
+"Nope, not this time.",
+
+"Keep dreaming!",
+
+"(╯°□°）╯︵ ┻━┻",
+
+"¯_(ツ)_/¯",
+
+"Error 404: Motivation not found. Please try again later or consult a cat video for immediate assistance. If the problem persists, consider bribing yourself with snacks. Works every time.",
+"Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop Stop",
+"We regret to inform you that your account has been temporarily suspended due to suspicious activity. Please verify your identity to restore access. Failure to do so within 24 hours will result in permanent deactivation. ",
+"Why was the computer cold? It left its Windows open.",
+"Why don't eggs tell jokes? They might crack up.",
+"ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
+"ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
+"ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
+"ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
+
         ];
 
         const imageUrls = [
@@ -174,6 +210,13 @@
             '7.jpg',
             '8.jpg',
             '9.jpg',
+            '10.jpg',
+            '11.jpg',
+            '12.jpg',
+            '13.jpg',
+            '14.png',
+            '15.jpg',
+            '16.jpg',
         ];
 
         function createPopup() {
@@ -186,11 +229,12 @@
                 <div class="content">${content}</div>
             `;
 
+        
             const contentLength = content.length;
             const baseWidth = 150; 
-            const baseHeight = 100;
-            const width = Math.min(baseWidth + (contentLength * 3), 300); 
-            const height = Math.min(baseHeight + (contentLength * 1), 200); 
+            const baseHeight = 100; 
+            const width = Math.min(baseWidth + (contentLength * 2), 300); 
+            const height = Math.min(baseHeight + (contentLength * 1), 300); 
 
             popup.style.width = `${width}px`;
             popup.style.height = `${height}px`;
@@ -264,7 +308,7 @@
             const img = document.createElement('img');
             img.src = imageUrls[Math.floor(Math.random() * imageUrls.length)]; 
             img.className = 'draggable';
-            img.style.width = (50 + Math.random() * 150) + 'px'; 
+            img.style.width = (70 + Math.random() * 150) + 'px'; 
             img.style.height = (50 + Math.random() * 150) + 'px'; 
             img.draggable = true;
 
@@ -274,7 +318,7 @@
             img.addEventListener('dragstart', (e) => {
                 const dragImage = img.cloneNode(true);
                 dragImage.style.position = 'fixed';
-                dragImage.style.top = '-9999px'; /
+                dragImage.style.top = '-9999px'; 
                 document.body.appendChild(dragImage);
                 e.dataTransfer.setDragImage(dragImage, e.offsetX, e.offsetY);
 
@@ -297,7 +341,7 @@
             glitchBlock.style.height = `${Math.random() * 100 + 50}px`; 
             glitchBlock.style.left = `${Math.random() * window.innerWidth}px`; 
             glitchBlock.style.top = `${Math.random() * window.innerHeight}px`; 
-            glitchBlock.style.backgroundColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`; 
+            glitchBlock.style.backgroundColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
 
             document.getElementById('desktop').appendChild(glitchBlock);
 
@@ -322,7 +366,7 @@
                 desktop.classList.add('grayscale');
                 setTimeout(() => {
                     desktop.classList.remove('grayscale');
-                }, Math.random() * 2000 + 1000); 
+                }, Math.random() *6000 + 3000);
             }
         }
 
@@ -345,7 +389,7 @@
             const trashcan = document.getElementById('trashcan');
             trashcan.addEventListener('dragover', (e) => {
                 e.preventDefault(); 
-                e.dataTransfer.dropEffect = 'move';
+                e.dataTransfer.dropEffect = 'move'; 
             });
 
             trashcan.addEventListener('drop', (e) => {
@@ -353,11 +397,11 @@
                 const imgSrc = e.dataTransfer.getData('text/plain');
                 const img = document.querySelector(`img[src="${imgSrc}"]`);
                 if (img) {
-                    img.remove();
+                    img.remove(); 
                 }
             });
-
             startGlitchEffect();
+
             startGrayscaleEffect();
         });
     </script>

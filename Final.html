@@ -142,9 +142,9 @@
     <svg width="0" height="0">
         <filter id="distortion">
             <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="10" result="turbulence" />
-            <animate attributeName="baseFrequency" from="0.1" to="0.02" dur="200s" repeatCount="indefinite" />
+            <animate attributeName="baseFrequency" from="0.3" to="0.02" dur="2000s" repeatCount="indefinite" />
     
-            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="200" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="100" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
 
@@ -152,6 +152,8 @@
         let popups = [];
         let popupInterval;
         let popupSpeed = 2000;
+        let zIndexCounter = 10;
+
         const popupContent = [
             "Hi, have you seen my donuts?",
             "Warning: System Update Required",
@@ -196,7 +198,7 @@
 "ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
 "ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
 "ooops, your password is about to expire. <a href='https://editor.p5js.org/Colleen3727/full/YCHHFAv-H' target='_blank'>Click here to reset!</a>",
-
+"Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning ",
         ];
 
         const imageUrls = [
@@ -206,7 +208,7 @@
             '3.jpg',
             '4.jpg',
             '5.jpg',
-            '6.jpg',
+            '6.png',
             '7.jpg',
             '8.jpg',
             '9.jpg',
@@ -242,6 +244,7 @@
             popup.style.left = (Math.random() * (window.innerWidth - width)) + 'px';
             popup.style.top = (Math.random() * (window.innerHeight - height)) + 'px';
 
+            popup.style.zIndex = zIndexCounter++;
             document.getElementById('desktop').appendChild(popup);
             popups.push(popup);
 
@@ -300,7 +303,7 @@
                 desktop.classList.add('distorted');
                 setTimeout(() => {
                     desktop.classList.remove('distorted');
-                }, 1000); 
+                }, 5000); 
             }
         }
 
@@ -308,13 +311,16 @@
             const img = document.createElement('img');
             img.src = imageUrls[Math.floor(Math.random() * imageUrls.length)]; 
             img.className = 'draggable';
-            img.style.width = (70 + Math.random() * 150) + 'px'; 
-            img.style.height = (50 + Math.random() * 150) + 'px'; 
+            img.style.width = (100 + Math.random() * 150) + 'px'; 
+            img.style.height = (80 + Math.random() * 150) + 'px'; 
             img.draggable = true;
 
             img.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
             img.style.top = (Math.random() * (window.innerHeight - 200)) + 'px';
 
+            img.style.zIndex = zIndexCounter++;
+            document.getElementById('desktop').appendChild(img);
+            
             img.addEventListener('dragstart', (e) => {
                 const dragImage = img.cloneNode(true);
                 dragImage.style.position = 'fixed';
@@ -347,7 +353,7 @@
 
             setTimeout(() => {
                 glitchBlock.remove();
-            }, Math.random() * 500 + 100); 
+            }, Math.random() * 700 + 200); 
         }
 
         function startGlitchEffect() {
